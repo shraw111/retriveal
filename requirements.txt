@@ -1,5 +1,6 @@
 # Core dependencies
-anthropic==0.39.0           # Claude API for LLM processing
+anthropic==0.39.0           # Claude API for LLM processing (optional)
+openai==1.12.0              # Azure OpenAI API (alternative to Anthropic)
 python-dotenv==1.0.0        # Environment variable management
 pydantic==2.5.0             # Data validation and modeling
 requests==2.31.0            # HTTP client for API calls

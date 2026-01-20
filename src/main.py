@@ -18,6 +18,7 @@ from .api.openfda import OpenFDAClient
 from .api.pubmed import PubMedClient
 from .api.clinicaltrials import ClinicalTrialsClient
 from .utils.llm_client import ClaudeClient
+from .utils.azure_openai_client import AzureOpenAIClient
 from .processors.intent_parser import IntentParser
 from .processors.search_orchestrator import SearchOrchestrator
 from .processors.ranker import ResultsRanker
@@ -45,14 +46,54 @@ class DrugClaimsRetrieval:
         """Initialize all components"""
         logger.info("Initializing Drug Claims Retrieval System")
 
-        # Get API keys from environment
-        anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-        if not anthropic_api_key:
+        # Determine LLM provider
+        llm_provider = os.getenv("LLM_PROVIDER", "azure").lower()
+        logger.info(f"Using LLM provider: {llm_provider}")
+
+        # Initialize LLM client based on provider
+        if llm_provider == "azure":
+            # Azure OpenAI configuration
+            azure_api_key = os.getenv("AZURE_OPENAI_API_KEY")
+            azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+            azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4")
+            azure_api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
+
+            if not azure_api_key or not azure_endpoint:
+                raise ValueError(
+                    "Azure OpenAI configuration missing. Please set:\n"
+                    "- AZURE_OPENAI_API_KEY\n"
+                    "- AZURE_OPENAI_ENDPOINT\n"
+                    "- AZURE_OPENAI_DEPLOYMENT (optional, defaults to 'gpt-4')\n"
+                    "in your .env file"
+                )
+
+            self.llm_client = AzureOpenAIClient(
+                api_key=azure_api_key,
+                azure_endpoint=azure_endpoint,
+                deployment_name=azure_deployment,
+                api_version=azure_api_version
+            )
+            logger.info(f"Initialized Azure OpenAI client with deployment: {azure_deployment}")
+
+        elif llm_provider == "anthropic":
+            # Anthropic Claude configuration
+            anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+            if not anthropic_api_key:
+                raise ValueError(
+                    "ANTHROPIC_API_KEY not found in environment. "
+                    "Please set it in .env file or environment variables."
+                )
+
+            self.llm_client = ClaudeClient(api_key=anthropic_api_key)
+            logger.info("Initialized Anthropic Claude client")
+
+        else:
             raise ValueError(
-                "ANTHROPIC_API_KEY not found in environment. "
-                "Please set it in .env file or environment variables."
+                f"Unknown LLM_PROVIDER: {llm_provider}. "
+                "Please set LLM_PROVIDER to either 'azure' or 'anthropic' in .env file"
             )
 
+        # Get NCBI credentials
         ncbi_api_key = os.getenv("NCBI_API_KEY")
         ncbi_email = os.getenv("NCBI_EMAIL")
 
@@ -69,18 +110,15 @@ class DrugClaimsRetrieval:
             page_size=int(os.getenv("MAX_RESULTS_CLINICAL_TRIALS", "10"))
         )
 
-        # Initialize LLM client
-        self.claude = ClaudeClient(api_key=anthropic_api_key)
-
-        # Initialize processors
-        self.intent_parser = IntentParser(self.claude, self.openfda)
+        # Initialize processors with LLM client
+        self.intent_parser = IntentParser(self.llm_client, self.openfda)
         self.search_orchestrator = SearchOrchestrator(
             self.openfda,
             self.pubmed,
             self.clinicaltrials
         )
-        self.ranker = ResultsRanker(self.claude)
-        self.claims_generator = ClaimsGenerator(self.claude)
+        self.ranker = ResultsRanker(self.llm_client)
+        self.claims_generator = ClaimsGenerator(self.llm_client)
 
         # Initialize validators
         self.search_validator = SearchValidator()
