@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.14, pytest-7.4.3, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /home/user/retriveal
+plugins: asyncio-0.21.1, anyio-4.12.1
+asyncio: mode=Mode.STRICT
+collecting ... collected 9 items
+
+tests/test_basic.py::test_user_intent_model PASSED                       [ 11%]
+tests/test_basic.py::test_claim_model PASSED                             [ 22%]
+tests/test_basic.py::test_fda_label_response PASSED                      [ 33%]
+tests/test_basic.py::test_pubmed_article_metadata PASSED                 [ 44%]
+tests/test_basic.py::test_claim_validator_completeness PASSED            [ 55%]
+tests/test_basic.py::test_claim_validator_full_text PASSED               [ 66%]
+tests/test_basic.py::test_search_validator PASSED                        [ 77%]
+tests/test_basic.py::test_full_pipeline SKIPPED (Requires API keys a...) [ 88%]
+tests/test_output_demo.py::test_output_structure PASSED                  [100%]
+
+=============================== warnings summary ===============================
+../../../usr/local/lib/python3.11/dist-packages/pydantic/_internal/_config.py:268
+tests/test_basic.py::test_user_intent_model
+  /usr/local/lib/python3.11/dist-packages/pydantic/_internal/_config.py:268: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.5/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+tests/test_output_demo.py::test_output_structure
+  /usr/local/lib/python3.11/dist-packages/_pytest/python.py:198: PytestReturnNotNoneWarning: Expected None, but tests/test_output_demo.py::test_output_structure returned True, which will be an error in a future version of pytest.  Did you mean to use `assert` instead of `return`?
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=================== 8 passed, 1 skipped, 3 warnings in 0.17s ===================
