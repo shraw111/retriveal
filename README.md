@@ -95,9 +95,35 @@ Structured JSON Output
 
 ## Usage
 
-### Command Line Interface
+### 🌐 Web Interface (Streamlit) - **RECOMMENDED**
 
-Basic usage:
+**Start the application:**
+```bash
+# Quick start
+./run.sh
+
+# Or manually
+streamlit run streamlit_app.py
+```
+
+**Access the web interface:**
+- Open your browser to `http://localhost:8501`
+- Enter your query in the search box
+- View results with professional formatting, logging, and export options
+
+**Features:**
+- ✅ Real-time progress tracking
+- ✅ Professional result cards with expandable sections
+- ✅ Live logging display
+- ✅ JSON download and copy
+- ✅ Citation formatting with links
+- ✅ Numerical data validation viewer
+- ✅ Excluded articles tracking
+
+### 💻 Command Line Interface (Alternative)
+
+For automation and scripting:
+
 ```bash
 python -m src.main "efficacy claims for Paxlovid in treating COVID-19 in high-risk patients"
 ```
@@ -107,7 +133,7 @@ Save to specific file:
 python -m src.main "safety claims for Keytruda in melanoma" output/keytruda_claims.json
 ```
 
-### Python API
+### 🐍 Python API (Programmatic Access)
 
 ```python
 import asyncio
@@ -135,21 +161,14 @@ asyncio.run(main())
 
 ### Example Queries
 
-```bash
-# Efficacy claims
-python -m src.main "efficacy claims for Paxlovid in treating COVID-19"
+Try these in the Streamlit interface or CLI:
 
-# Safety profile
-python -m src.main "safety profile for Ozempic in type 2 diabetes"
-
-# Indication claims
-python -m src.main "approved indications for Humira"
-
-# Specific population
-python -m src.main "efficacy of Eliquis in elderly patients with atrial fibrillation"
-
-# Dosing information
-python -m src.main "dosing recommendations for Keytruda in melanoma"
+```
+efficacy claims for Paxlovid in treating COVID-19
+safety profile for Ozempic in type 2 diabetes
+approved indications for Humira
+efficacy of Eliquis in elderly patients with atrial fibrillation
+dosing recommendations for Keytruda in melanoma
 ```
 
 ## Output Format

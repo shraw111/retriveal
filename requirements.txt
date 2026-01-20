@@ -5,6 +5,7 @@ pydantic==2.5.0             # Data validation and modeling
 requests==2.31.0            # HTTP client for API calls
 aiohttp==3.9.1              # Async HTTP client for parallel requests
 biopython==1.83             # PubMed API integration
+streamlit==1.29.0           # Web UI framework
 
 # Data processing
 xmltodict==0.13.0           # XML to dict conversion for PubMed
